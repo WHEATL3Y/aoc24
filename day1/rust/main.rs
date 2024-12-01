@@ -25,8 +25,8 @@ fn main() {
     // Split input into lines, loop through lines and split into 
     // individual numbers, add numbers to l1, and l2.
 
-    // let filename = "../inputs/day1.sample.txt";
-    let filename = "../inputs/day1.txt";
+    // let filename = "../../inputs/day1.sample.txt";
+    let filename = "../../inputs/day1.txt";
     let mut l1: Vec<usize> = Vec::<usize>::new();
     let mut l2: Vec<usize> = Vec::<usize>::new();
     for line in get_input(filename).split("\n") {
