@@ -10,15 +10,9 @@ fn get_input(file: &str) -> String {
 
 fn count(list: &Vec<usize>, value: usize) -> usize {
     // Returns the number of times values appears in list
-    let mut count = 0;
-    let mut i = 0;
-    while i < list.len() {
-        if list[i] == value {
-            count += 1;
-        }
-        i += 1;
-    }
-    count
+    let high = list.partition_point(|&x| x <= value);
+    let low = list.partition_point(|&x| x < value);
+    high - low
 }
 
 fn main() {
