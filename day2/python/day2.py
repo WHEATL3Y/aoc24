@@ -34,9 +34,7 @@ if __name__ == "__main__":
             answer2 += 1
             continue
         for i in range(0, len(entry)):
-            dampend_entry = entry[:]
-            del dampend_entry[i]
-            if error_count(dampend_entry) == 0:
+            if error_count(entry[0:i] + entry[i+1:len(entry)]) == 0:
                 answer2 += 1
                 break
 
