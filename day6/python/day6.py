@@ -16,7 +16,7 @@ def simulate(map, y, x, track_obstacles=False):
             if path_max <= 0:
                 return (len(path), True)
         else:
-            path_max = len(path) * 5
+            path_max = len(path)
 
         ny = y + d[0]
         nx = x + d[1]
@@ -41,6 +41,7 @@ if __name__ == "__main__":
     answer2 = 0
     width = len(data[1])
     height = len(data)
+    print(width, height)
     x = y = 0
     for yy in range(height):
         for xx in range(width):
@@ -51,13 +52,15 @@ if __name__ == "__main__":
     map = []
     global obstacles
     obstacles = set()
-    for _ in range(width):
+    for _ in range(height):
         map.append(list(data[_]))
 
     answer1 = simulate(map, y, x, True)[0]
 
     for o in obstacles:
-        if o[0] == y and o[1] == x:
+        if o[0] == 0 or o[1] == 0 or o[0] == 129 or o[1] == 129:
+            print(o)
+        if o[0] == y and o[1] == x or map[y][x] == "X":
             continue
         new_map = copy.deepcopy(map)
         new_map[o[0]][o[1]] = "#"
