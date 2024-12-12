@@ -18,22 +18,25 @@ fn main() {
         ).collect();
     for y in 0..map.len() {
         for x in 0..map[y].len() {
-            assert!(map[y].len() > 0);
             if map[y][x] == '^' {
                 pos = (y, x);
             }
         }
     }
-    assert!(pos.0 != 0 && pos.1 != 0); 
+    for y in 0..map.len() {
+        for x in 0..map[y].len() {
+            print!("{}", map[y][x]);
+        }
+        println!();
+    }
     let mut ny = pos.0;
     let mut nx = pos.1;
     loop {
-        println!("{}, {}", nx, ny);
         seen.insert((ny, nx));
         ny = (ny as isize + dirs[d].0) as usize;
         nx = (nx as isize + dirs[d].1) as usize;
         if 0 > ny as isize
-            || ny >= map.len()
+            || ny >= map.len() - 1
             || 0 > nx as isize
             || nx >= map[0].len() {
                 break;
