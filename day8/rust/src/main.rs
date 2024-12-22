@@ -46,8 +46,8 @@ fn main() {
                     && y >= 0 && y < map.len() as isize {
                         if !antinodes.contains(&(x, y)) {
                             antinodes.push((x, y));
+                            answer2 += 1;
                         }
-                        answer2 += 1;
                         y = y + (v.1 - t.1);
                         x = x + (v.0 - t.0);
                 }
@@ -59,5 +59,5 @@ fn main() {
         }
 
     }
-    println!("{}\n{}", answer1, antinodes.len());
+    println!("{}\n{}", answer1, answer2);
 }
