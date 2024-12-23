@@ -14,72 +14,49 @@ fn main() {
     // let mut answer2 = 0;
     //
     // Build FS from input data
-    let mut id = 0;
+    let mut id: isize = 0;
+    let mut fs_master: Vec<(isize, usize)> = Vec::new();
     let mut in_file = true;
-    let mut fs_master: Vec<isize> = Vec::new();
     for v in data {
-        let value_to_push: isize;
-        if !in_file {
-            value_to_push = -1;
-        }
-        else {
-           value_to_push = id;
-           id += 1;
-        }
-        let mut i = 0;
-        while i < v {
-            fs_master.push(value_to_push);
-            i += 1;
+        fs_master.push((if in_file {id} else {-1}, v));
+        if in_file {
+            id += 1;
         }
         in_file = !in_file;
     }
-
-    // Copy and compact file system
-    let mut fs = fs_master.to_vec();
-    let mut last_digit = fs.len() - 1;
-    let mut pos = 0;
-    loop {
-        while fs[last_digit] == -1 {
-            last_digit -= 1;
-        }
-        while !(fs[pos] == -1) {
-            pos += 1;
-        }
-        if last_digit <= pos {
-            break;
-        }
-        fs[pos] = fs[last_digit];
-        fs[last_digit] = -1;
-    }
-
-    // Calculate checksum
-    let mut i = 0;
-    while fs[i] != -1 {
-        answer1 += i * fs[i] as usize;
-        i += 1;
-    }
-
-    // Copy and defrag
-    fs = fs_master.to_vec();
-    let mut last_block = [fs.len() - 2, fs.len() - 2];
-    let mut next_empty = [0, 1];
-    let mut last_digit = fs.len() -1;
-    let mut pos = 0;
-    loop {
-        // Find bounds of file, seaching from the end of fs
-        while fs[last_digit] == -1 {
-            last_digit -= 1;
-        }
-        last_block[1] = last_digit;
-        while fs[last_digit] == fs[last_block[1]] && last_digit > 0 {
-            last_digit -= 1
-        }
-        last_block[0] = last_digit;
-        if last_digit == 0 {
-            break;
-        }
-    }
     
+    for i in 0..fs_master.len() {
+        println!("({}, {})", fs_master[i].0, fs_master[i].1); 
+    }
+
+    for i in (0..fs_master.len()).rev() {
+        for i in 0..fs_master.len() {
+            print!("({}, {})", fs_master[i].0, fs_master[i].1); 
+        }
+        println!();
+        if fs_master[i].0 != -1 {
+            for j in 0..fs_master.len() {
+                if i <= j {
+                    break;
+                }
+                if fs_master[j].0 == -1 && fs_master[i].1 <= fs_master[j].1 {
+                    // (value, size)
+                    // Value and size of blocks being moved
+                    let v = fs_master[i].0.clone();
+                    let s = fs_master[i].1.clone();
+                    // Size of empty block
+                    let es = fs_master[j].1.clone();
+                    // Resize empty block
+                    fs_master[j].1 = es - s;
+                    // Move file to empty block
+                    fs_master.insert(j, (v, s));
+                    // Set old block to empty
+                    fs_master[i].0 = -1;
+                    break;
+                }
+            }
+        }
+    }
     // Print answers
     println!("{}", answer1);
 }
