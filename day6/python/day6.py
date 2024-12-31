@@ -3,48 +3,42 @@ import copy
 
 def simulate(map, y, x, track_obstacles=False):
     directions = [(-1, 0), (0, 1), (1, 0), (0, -1)]
-    dp = 0
-    d = directions[dp]
+    d = 0
     path = set()
-    path_max = 0
+    path_len = 3
     while True:
-        # # Loop detection
-        path_len = len(path)
         path.add((y, x))
-        if path_len == len(path):
-            path_max -= 1
-            if path_max <= 0:
-                return (len(path), True)
-        else:
-            path_max = len(path)
-
-        ny = y + d[0]
-        nx = x + d[1]
-        if 0 > nx or nx >= width or 0 > ny or ny >= height:
+        y = y + directions[d][0]
+        x = x + directions[d][1]
+        if 0 > x or x >= len(map[0]) or 0 > y or y >= len(map):
             break
-        if map[ny][nx] == "#":
-            dp = dp + 1 if dp + 1 < len(directions) else 0
-            d = directions[dp]
+        if map[y][x] == "#":
+            y = y - directions[d][0]
+            x = x - directions[d][1]
+            d = (d + 1) % 4
         elif track_obstacles:
-            obstacles.add((ny, nx))
-        y = y + d[0]
-        x = x + d[1]
+            obstacles.add((y, x))
+
+        if (y, x) in path:
+            path_len -= 1
+        else:
+            path_len += 1
+
+        if path_len == 0:
+            return (len(path), True)
 
     return (len(path), False)
 
 
 if __name__ == "__main__":
+    answer1 = 0
+    answer2 = 0
     with open("../../inputs/day6.txt") as f:
         data = f.read().strip().split("\n")
 
-    answer1 = 0
-    answer2 = 0
-    width = len(data[1])
-    height = len(data)
-    print(width, height)
     x = y = 0
-    for yy in range(height):
-        for xx in range(width):
+    for yy in range(len(data)):
+        for xx in range(len(data[0])):
             if data[yy][xx] == "^":
                 x = xx
                 y = yy
@@ -52,19 +46,15 @@ if __name__ == "__main__":
     map = []
     global obstacles
     obstacles = set()
-    for _ in range(height):
+    for _ in range(len(data)):
         map.append(list(data[_]))
 
     answer1 = simulate(map, y, x, True)[0]
 
     for o in obstacles:
-        if o[0] == 0 or o[1] == 0 or o[0] == 129 or o[1] == 129:
-            print(o)
-        if o[0] == y and o[1] == x or map[y][x] == "X":
-            continue
         new_map = copy.deepcopy(map)
         new_map[o[0]][o[1]] = "#"
-        if looped := simulate(new_map, y, x)[1]:
+        if simulate(new_map, y, x)[1]:
             answer2 += 1
 
     print(answer1, answer2, sep="\n")
